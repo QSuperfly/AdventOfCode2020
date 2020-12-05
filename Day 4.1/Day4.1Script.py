@@ -25,7 +25,7 @@ def check_passport (passport):
 
 # Read file and Loop through lines # More readable
 line_counter = 0
-for line in open('input.txt', 'r').readlines():
+for line in open(input_filename, 'r').readlines():
     line_counter += 1
     if len(line.strip()) != 0: 
         line_parts = line.split(' ')
