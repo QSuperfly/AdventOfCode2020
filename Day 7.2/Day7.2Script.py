@@ -5,7 +5,7 @@ input_filename = "Input.txt"
 output_filename = "Output.txt"
 
 # Variables to use
-bag_to_check = "shiny gold bag"
+bag_to_check = "shiny gold"
 
 # Get list of lines from file input
 def get_file_input():
@@ -13,35 +13,16 @@ def get_file_input():
         file_list = file.read().splitlines()
     return file_list
 
-# Create dictionary item
-def create_dictionary_item(bag):
-    print(bag[:bag.find(" bags contain ")])
-    this_bag = {
-        "bag": bag[:bag.find(" bags contain ")]
-    }
-    for s in bag[bag.find(" bags contain "):].replace(" bags contain ", "").replace(".", "").split(", "):
-        print("Count " + str(s.split(" ")[0]))
-    return this_bag
-
 # Recursive function that checks which bags can hold the specified bag
-def check_main_bag_occurances (bag_to_check, list_of_bags):
-    list_of_possible_bags = []
+def check_main_bag_occurances (bag_to_check, list_of_bags, number_of_bags):
+    total_bags = 1
     for bag in list_of_bags:
-        #print(bag[bag.find(" bags contain "):].replace(" bags contain ", "").replace(".", "").split(", "))
-        if bag_to_check in bag[bag.find(" bags contain "):]:
-            print (bag_to_check)
-            #list_of_possible_bags.append(bag[:bag.find(" bags contain ")])
-            list_of_possible_bags.append(create_dictionary_item(bag))
-            #print(bag[:bag.find(" bags contain ")]+ " " + str(bag.find(bag_to_check)))
-            #print (bag[bag.find(" bags contain "):].replace(" bags contain ", "").replace(".", "").split(", "))
-            #print(list_of_possible_bags)
-            list_of_possible_bags.extend(check_main_bag_occurances(bag[:bag.find(" bags contain ")], list_of_bags))
-    return list_of_possible_bags
+        if bag_to_check in bag.split(" bags contain ")[0]:
+            for contains_bag in bag.split(" bags contain ")[1].rstrip().replace(".", "").replace("bags", "").replace("bag", "").split(", "):
+                if "no other" not in contains_bag:
+                    total_bags += int(contains_bag.split(" ")[0]) * check_main_bag_occurances(contains_bag.replace(contains_bag.split(" ")[0] + " ", "").rstrip(), list_of_bags, int(contains_bag.split(" ")[0]))
+    return total_bags
 
 # Print answer
 print("")
-#print("Sum of bags: " + str(len(set(check_main_bag_occurances(bag_to_check, get_file_input())))))
-print(list(check_main_bag_occurances(bag_to_check, get_file_input())))
-
-# Wrong answers
-# 100
+print("Done! Result: " + str(check_main_bag_occurances(bag_to_check, get_file_input(), 1) - 1))
